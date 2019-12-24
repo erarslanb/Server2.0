@@ -29,8 +29,8 @@ DROP TABLE IF EXISTS `User` ;
 
 CREATE TABLE IF NOT EXISTS `User` (
   `user_id` CHAR(21) NOT NULL UNIQUE,
-  `username` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NOT NULL UNIQUE,
+  `username` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
   `calories` INT NULL,
   `carbs` INT NULL,
   `fat` INT NULL,
@@ -65,9 +65,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `Restaurant` (
-  `rest_name` VARCHAR(45) NOT NULL,
-  `rest_email` VARCHAR(45) NOT NULL UNIQUE,
-  `rest_password` VARCHAR(45) NOT NULL,
+  `rest_name` VARCHAR(255) NOT NULL,
+  `rest_email` VARCHAR(255) NOT NULL UNIQUE,
+  `rest_password` VARCHAR(255) NOT NULL,
   `location_lat` DOUBLE NULL,
   `location_long` DOUBLE NULL,
   PRIMARY KEY (`rest_email`)
@@ -75,20 +75,6 @@ CREATE TABLE IF NOT EXISTS `Restaurant` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `Menu`
--- -----------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `Menu` (
-  `menu_id` INT NOT NULL UNIQUE AUTO_INCREMENT,
-  `rest_email` VARCHAR(45) NOT NULL,
-  FOREIGN KEY (`rest_email`)
-    REFERENCES `Restaurant` (`rest_email`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  PRIMARY KEY (`menu_id`, `rest_email`)
-  )
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -96,20 +82,20 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `Food` (
-  `food_id` INT NOT NULL UNIQUE AUTO_INCREMENT,
-  `rest_email` VARCHAR(45) NOT NULL,
-  `food_name` VARCHAR(45) NOT NULL,
+  `rest_email` VARCHAR(255) NOT NULL,
+  `food_name` VARCHAR(255) NOT NULL,
   `calories` INT NOT NULL,
   `carb_val` INT NOT NULL,
   `prot_val` INT NOT NULL,
   `fat_val` INT NOT NULL,
   `price` DOUBLE NULL,
+  `type` INT NOT NULL,
   CONSTRAINT `mn_id`
   FOREIGN KEY (rest_email)
     REFERENCES `Restaurant` (rest_email)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    PRIMARY KEY (`rest_email`, `food_id`)
+    PRIMARY KEY (`rest_email`, `food_name`)
 )
 ENGINE = InnoDB;
 
@@ -120,8 +106,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `Meals` (
   `user_id` CHAR(21) NOT NULL,
-  `meal_id` INT NOT NULL UNIQUE AUTO_INCREMENT,
-  `meal_name` VARCHAR(45) NOT NULL,
+  `meal_name` VARCHAR(255) NOT NULL,
   `calories` INT NOT NULL,
   `carbs` INT NOT NULL,
   `fat` INT NOT NULL,
@@ -130,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `Meals` (
     REFERENCES `User` (`user_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    PRIMARY KEY (`user_id`, `meal_id`)
+    PRIMARY KEY (`user_id`, `meal_name`)
   )
 ENGINE = InnoDB;
 
@@ -160,15 +145,16 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `Food_picked` (
   `time` DATETIME NOT NULL,
-  `food_id` INT NOT NULL,
+  `food_name` VARCHAR(255) NOT NULL,
+  `rest_email` VARCHAR(255) NOT NULL,
   `picked_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` CHAR(21) NOT NULL,
   FOREIGN KEY (`user_id`)
     REFERENCES `User` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  FOREIGN KEY (`food_id`)
-    REFERENCES `Food` (`food_id`)
+  FOREIGN KEY ( `rest_email`, `food_name`)
+    REFERENCES `Food` (`rest_email`, `food_name`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
     PRIMARY KEY (`picked_id`))

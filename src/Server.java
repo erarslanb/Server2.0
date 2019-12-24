@@ -73,17 +73,10 @@ public class Server {
                     oos.writeObject(toSend);
                     //send error done
                 }
-            }else if(arguments[0].equals(restsign)){
-                if(dba.createRestaurant(arguments[1],arguments[2],arguments[3])){
-                    String toSend = "TRUE";
-                    oos.writeObject(toSend);
+            }else if(arguments[0].equals(restsign)) {
+                Restaurant result = dba.createRestaurant(arguments[1], arguments[2], arguments[3]);
+                oos.writeObject(result);
 
-                    //send result
-                }else {
-                    String toSend = "FALSE";
-                    oos.writeObject(toSend);
-                    //send error info
-                }
             }else if(arguments[0].equals(menuSearch)){
                 double x  = Integer.parseInt(arguments[1]);
                 double y  = Integer.parseInt(arguments[2]);
@@ -133,9 +126,10 @@ public class Server {
                 int prot = Integer.parseInt(arguments[5]);
                 int fat = Integer.parseInt(arguments[6]);
                 double price = Double.parseDouble(arguments[7]);
+                int type = Integer.parseInt(arguments[8]);
 
                 boolean result = dba.addMenuItem(restEmail, foodName, calories,
-                                            carbs, prot, fat, price);
+                                            carbs, prot, fat, price, type);
 
                 oos.writeObject(result);
 
@@ -176,13 +170,13 @@ public class Server {
                 oos.writeObject(result);
             }else if(arguments[0].equals(updateMeal)){
                 String userID = arguments[1];
-                int mealID = Integer.parseInt(arguments[2]);
-                int calories = Integer.parseInt(arguments[2]);
-                int carbs = Integer.parseInt(arguments[3]);
-                int fat = Integer.parseInt(arguments[4]);
-                int protein = Integer.parseInt(arguments[5]);
+                String mealName = arguments[2];
+                int calories = Integer.parseInt(arguments[3]);
+                int carbs = Integer.parseInt(arguments[4]);
+                int fat = Integer.parseInt(arguments[5]);
+                int protein = Integer.parseInt(arguments[6]);
 
-                boolean result = dba.updateMeal(userID, mealID, calories, carbs, fat, protein);
+                boolean result = dba.updateMeal(userID, mealName, calories, carbs, fat, protein);
 
                 oos.writeObject(result);
             }
@@ -205,7 +199,7 @@ public class Server {
             if(message.equals("3")){
                 dba.testUserLogin("23123","Allllli","anan@anan.com");
                 dba.createRestaurant("kazıkcıhusrem@ananisikicez.com","benimsifremcoksaglam","husreminanasikmeyeri");
-                dba.addMenuItem("kazıkcıhusrem@ananisikicez.com","Adana Kebap",1250,100,100,213,-1);
+                dba.addMenuItem("kazıkcıhusrem@ananisikicez.com","Adana Kebap",1250,100,100,213,-1, 0);
                 dba.deleteFood("kazıkcıhusrem@ananisikicez.com","Kebap");
                 //System.out.println(dba.addMeal(123,123,123,123,23123,"randomMeal"));
                 //System.out.println(dba.addMealToDaily(44,44,44,44,23123));

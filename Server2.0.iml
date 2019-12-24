@@ -17,5 +17,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="mariadb-java-client-2.4.4" level="project" />
+    <orderEntry type="library" name="bitirmeSharedClasses" level="project" />
   </component>
 </module>

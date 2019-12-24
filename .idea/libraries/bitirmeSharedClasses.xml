@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="bitirmeSharedClasses">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/resources/bitirmeSharedClasses.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

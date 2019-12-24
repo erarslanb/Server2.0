@@ -76,15 +76,15 @@ public class DBAdmin {
         return false;
     }
 
-    public boolean updateMeal(String userID, int mealID, int calories, int carbs, int fat, int protein) throws SQLException{
-        PreparedStatement stmt = cn.prepareStatement("update Meals set calories = ?, carbs = ?, fat = ?, protein = ? where user_id = ? and meal_id = ?");
+    public boolean updateMeal(String userID, String mealName, int calories, int carbs, int fat, int protein) throws SQLException{
+        PreparedStatement stmt = cn.prepareStatement("update Meals set calories = ?, carbs = ?, fat = ?, protein = ? where user_id = ? and meal_name = ?");
 
         stmt.setInt(1, calories);
         stmt.setInt(2, carbs);
         stmt.setInt(3, fat);
         stmt.setInt(4, protein);
         stmt.setString(5, userID);
-        stmt.setInt(6, mealID);
+        stmt.setString(6, mealName);
 
 
         int i = stmt.executeUpdate();
@@ -120,17 +120,16 @@ public class DBAdmin {
 
     }
 
-    public boolean createRestaurant(String email,String pass,String restName ) throws SQLException {
+    public Restaurant createRestaurant(String email,String pass,String restName ) throws SQLException {
         //works
         PreparedStatement ifStmt = cn.prepareStatement("select * from Restaurant where rest_email = ?");
         ifStmt.setString(1,email);
         ResultSet ifrs = ifStmt.executeQuery();
         if(ifrs.next()){
-            return false;
+            return null;
         }
         else{
             PreparedStatement  stmt=cn.prepareStatement("insert into Restaurant values(?,?,?,?,?)");
-            PreparedStatement MenuStmt = cn.prepareStatement("insert into Menu values (?,?)");
             stmt.setString(1,restName);
             stmt.setString(2,email);
             stmt.setString(3,pass);
@@ -139,21 +138,11 @@ public class DBAdmin {
             int i=stmt.executeUpdate();
 
             if(i ==1){
-                stmt = cn.prepareStatement("insert into Menu(rest_email) values (?)");
-                stmt.setString(1,email);
-                int j = stmt.executeUpdate();
-                if(j == 1) {
-                    return true;
-                }
-                else{
-                    stmt = cn.prepareStatement("delete from Restaurant whre rest_email = ?");
-                    stmt.setString(1,email);
-                    stmt.executeQuery();
-                    return false;
+                Restaurant rs = new Restaurant(restName, email, 0, 0, null, null);
 
-                }
+                return rs;
             }
-            else return false;
+            else return null;
 
         }
 
@@ -266,13 +255,12 @@ public class DBAdmin {
 
             String mealname = rs.getString("meal_name");
             String user_id = rs.getString("user_id");
-            int meal_id = rs.getInt("meal_id");
             int calories = rs.getInt("calories");
             int fat = rs.getInt("fat");
             int protein = rs.getInt("protein");
             int carbs = rs.getInt("carbs");
 
-            Meal m = new Meal(mealname, user_id, meal_id, calories, fat, protein, carbs);
+            Meal m = new Meal(mealname, user_id, calories, fat, protein, carbs);
             meals.add(m);
         }
 
@@ -340,8 +328,7 @@ public class DBAdmin {
 
 
         PreparedStatement stmt2 = cn.prepareStatement(
-                "Select * from Food where menu_id in " +
-                        "(Select menu_id from Menu where rest_email = ?)");
+                "Select * from Food where rest_email = ?)");
 
         while(rs2.next()){
             String name = rs2.getString("rest_name");
@@ -359,7 +346,6 @@ public class DBAdmin {
 
             while(temprs.next()){
                 String foodname = temprs.getString("food_name");
-                int food_id = temprs.getInt("food_id");
                 String rest_email = temprs.getString("rest_email");
                 int cal = temprs.getInt("calories");
                 int carb = temprs.getInt("carb_val");
@@ -367,7 +353,7 @@ public class DBAdmin {
                 int fats = temprs.getInt("fat_val");
 
 
-                Food f = new Food(foodname, food_id, rest_email, cal, fats, prot, carb, 1);
+                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, 1);
 
                 menu.add(f);
 
@@ -403,8 +389,7 @@ public class DBAdmin {
             longt = rs.getDouble("location_long");
 
             PreparedStatement stmt2 = cn.prepareStatement(
-                    "Select * from Food where menu_id in " +
-                            "(Select menu_id from Menu where rest_email = ?)");
+                    "Select * from Food where rest_email = ?)");
 
             stmt2.setString(1, email);
 
@@ -412,7 +397,6 @@ public class DBAdmin {
 
             while (rs2.next()) {
                 String foodname = rs2.getString("food_name");
-                int food_id = rs2.getInt("food_id");
                 String rest_email = rs2.getString("rest_email");
                 int cal = rs2.getInt("calories");
                 int carb = rs2.getInt("carb_val");
@@ -420,7 +404,7 @@ public class DBAdmin {
                 int fats = rs2.getInt("fat_val");
 
 
-                Food f = new Food(foodname, food_id, rest_email, cal, fats, prot, carb, 1);
+                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, 1);
 
                 menu.add(f);
 
@@ -432,76 +416,61 @@ public class DBAdmin {
         return rest;
     }
 
-    public boolean addMenuItem(String email, String foodName, int calories,int carb,int protein,int fat, double price) throws SQLException {
+    public boolean addMenuItem(String email, String foodName, int calories,int carb,int protein,int fat, double price, int type) throws SQLException {
         if(checkIfMenuItemExists(email,foodName)){
             return false;
         }
         else{
             //works
-            PreparedStatement stmt = cn.prepareStatement("insert into Food(menu_id,food_name,calories,carb_val," +
-                    "prot_val,fat_val,price) values (?,?,?,?,?,?,?)");
+            PreparedStatement stmt = cn.prepareStatement("insert into Food(rest_email, food_name,calories,carb_val," +
+                    "prot_val,fat_val,price, type) values (?,?,?,?,?,?,?,?)");
+            stmt.setString(1, email);
             stmt.setString(2,foodName);
             stmt.setInt(3,calories);
             stmt.setInt(4,carb);
             stmt.setInt(5,protein);
             stmt.setInt(6,fat);
+            stmt.setInt(8, type);
             if(price < 0){
                 stmt.setNull(7,Types.DOUBLE);
             }else {
                 stmt.setDouble(7,price);
             }
 
-            PreparedStatement stmt2 = cn.prepareStatement("select * from Menu where rest_email = ?");
-            stmt2.setString(1,email);
-            ResultSet rs = stmt2.executeQuery();
-            if(rs.next()){
-                int menuID;
-                menuID = rs.getInt(1);
-                stmt.setInt(1,menuID);
-                int i = stmt.executeUpdate();
-                if(i == 1){
-                    return true;
-                }else return false;
-            }else return false;
+            int i = stmt.executeUpdate();
+
+            if(i == 1){
+                return true;
+            }else
+                return false;
 
         }
     }
 
     public boolean checkIfMenuItemExists(String email, String name) throws SQLException {
         //works
-        PreparedStatement stmt = cn.prepareStatement("select * from Menu where rest_email = ?");
+
+        PreparedStatement stmt = cn.prepareStatement("select * from Food where rest_email = ? and food_name = ?");
+        stmt.setString(2,name);
         stmt.setString(1,email);
         ResultSet rs = stmt.executeQuery();
         if(rs.next()){
-            int menuID = rs.getInt(1);
-            stmt = cn.prepareStatement("select * from Food where menu_id = ? and food_name = ?");
-            stmt.setString(2,name);
-            stmt.setInt(1,menuID);
-            rs = stmt.executeQuery();
-            if(rs.next()){
-                return true;
-            }
-        }
-        return false;
+            return true;
+        }else
+            return false;
     }
 
     public boolean deleteFood(String email,String foodName) throws SQLException {
         //works
-        PreparedStatement  stmt=cn.prepareStatement("delete from Food where food_name = ? and  menu_id = ?");
-        PreparedStatement  stmt2 = cn.prepareStatement("select * from Menu where rest_email = ?");
-        stmt2.setString(1,email);
-        ResultSet rs=stmt2.executeQuery();
-        if(rs.next()){
-            int menuID = rs.getInt(1);
-            stmt.setString(1,foodName);
-            stmt.setInt(2,menuID);
+        PreparedStatement  stmt=cn.prepareStatement("delete from Food where food_name = ? and  rest_email = ?");
+        stmt.setString(1,foodName);
+        stmt.setString(2, email);
+        int  rs=stmt.executeUpdate();
 
-            int i = stmt.executeUpdate();
-            if(i == 1){
-                return true;
-            }
-            else{return false;}
-        }else{return false;}
+        if( rs == 1){
+            return true;
+        }else
+            return false;
 
     }
 

@@ -39,8 +39,8 @@ public class MenuHandler {
 
         }
         //add dummy Foods to appetizer and desert to enable combinations without appetizer or desert
-        Food dummyAppetizer = new Food("dummyAppetizer", -1, "", 0, 0, 0, 0, 0);
-        Food dummyDesert = new Food("dummyDesert", -2, "", 0, 0, 0, 0, 2);
+        Food dummyAppetizer = new Food("dummyAppetizer", "", 0, 0, 0, 0, 0);
+        Food dummyDesert = new Food("dummyDesert", "", 0, 0, 0, 0, 2);
         appetizerList.add(dummyAppetizer);
         desertList.add(dummyDesert);
         ArrayList<ArrayList<Food>> results = new ArrayList<ArrayList<Food>>();
