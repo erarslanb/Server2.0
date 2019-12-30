@@ -19,7 +19,7 @@ public class Server {
         String nl = "%";
         String usrlogin = "USERLOGIN";
         String restlogin = "RESTAURANTLOGIN";
-        String restsign = "RESTAURANTLOGIN";
+        String restsign = "RESTAURANTSIGNUP";
         String menuSearch = "MENUSEARCH";
         String foodDelete = "FOODDELETE";
         String foodADD = "FOODADD";
@@ -65,8 +65,9 @@ public class Server {
             }else if(arguments[0].equals(restlogin)){
                 if(dba.testRestaurantLogin(arguments[1],arguments[2])){
                     //send rest info done
-                    //String toSend = dba.retrieveRestaurantInfo(arguments[1]);
-                    //oos.writeObject(toSend);
+                    Restaurant toSend = dba.retrieveRestaurantInfo(arguments[1]);
+                    System.out.println(toSend);
+                    oos.writeObject(toSend);
                 }
                 else{
                     String toSend = "FALSE";
@@ -78,8 +79,8 @@ public class Server {
                 oos.writeObject(result);
 
             }else if(arguments[0].equals(menuSearch)){
-                double x  = Integer.parseInt(arguments[1]);
-                double y  = Integer.parseInt(arguments[2]);
+                double x  = Double.parseDouble(arguments[1]);
+                double y  = Double.parseDouble(arguments[2]);
                 int carb = Integer.parseInt(arguments[3]);
                 int protein = Integer.parseInt(arguments[4]);
                 int fat = Integer.parseInt(arguments[5]);
@@ -90,6 +91,7 @@ public class Server {
                 ArrayList<Restaurant> sendRestaurants = dba.retrieveMenuInfo(calories,carb,fat,protein,x,y,radius);
 
                 if(sendRestaurants.size() >0){
+                    System.out.println(sendRestaurants.toString());
                     oos.writeObject(sendRestaurants);
                 }
 
@@ -104,8 +106,8 @@ public class Server {
 
             }else if(arguments[0].equals(editLocation)) {
                 String email = arguments[1];
-                double x  = Integer.parseInt(arguments[2]);
-                double y  = Integer.parseInt(arguments[3]);
+                double x  = Double.parseDouble(arguments[2]);
+                double y  = Double.parseDouble(arguments[3]);
 
                 boolean result = dba.editRestaurantLocation(email, x, y);
 

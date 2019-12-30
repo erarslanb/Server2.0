@@ -8,6 +8,7 @@ import java.util.Date;
 public class DBAdmin {
 
     //private static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    //todo dont forget to enter amazon stuff
     private static final String DB_URL = "jdbc:mariadb://192.168.1.107/diner";
     //private static final String DB_URL = "jdbc:mysql://localhost:8889/diner?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=Turkey";
     private final String pass = "q1w2e3r4t5";
@@ -138,6 +139,7 @@ public class DBAdmin {
             int i=stmt.executeUpdate();
 
             if(i ==1){
+                System.out.println("here");
                 Restaurant rs = new Restaurant(restName, email, 0, 0, null, null);
 
                 return rs;
@@ -321,14 +323,33 @@ public class DBAdmin {
             restEmails.add(rs1.getString("rest_email"));
         }
 
+        PreparedStatement laststme = cn.prepareStatement("Select * from Restaurant where rest_email = ?" );
+
+        ArrayList<Restaurant> toretrests = new ArrayList<>();
+
+        for(String s : restEmails){
+
+            laststme.setString(1,s);
+            ResultSet rsss = laststme.executeQuery();
+            if(rsss.next()){
+                String email = rsss.getString("rest_email");
+                Restaurant r = this.retrieveRestaurantInfo(email);
+                toretrests.add(r);
+
+            }
+
+        }
+
+        return toretrests;
+
 
         //get menu and foods for each restaurant
-
+/*
         ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 
 
         PreparedStatement stmt2 = cn.prepareStatement(
-                "Select * from Food where rest_email = ?)");
+                "Select * from Food where rest_email = ?");
 
         while(rs2.next()){
             String name = rs2.getString("rest_name");
@@ -351,9 +372,10 @@ public class DBAdmin {
                 int carb = temprs.getInt("carb_val");
                 int prot = temprs.getInt("prot_val");
                 int fats = temprs.getInt("fat_val");
+                int type = temprs.getInt("type");
 
 
-                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, 1);
+                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, type);
 
                 menu.add(f);
 
@@ -367,7 +389,9 @@ public class DBAdmin {
         }
 
 
+
         return restaurants;
+ */
     }
 
     public Restaurant retrieveRestaurantInfo(String email) throws SQLException {
@@ -389,7 +413,7 @@ public class DBAdmin {
             longt = rs.getDouble("location_long");
 
             PreparedStatement stmt2 = cn.prepareStatement(
-                    "Select * from Food where rest_email = ?)");
+                    "Select * from Food where rest_email = ?");
 
             stmt2.setString(1, email);
 
@@ -402,9 +426,11 @@ public class DBAdmin {
                 int carb = rs2.getInt("carb_val");
                 int prot = rs2.getInt("prot_val");
                 int fats = rs2.getInt("fat_val");
+                int type = rs2.getInt("type");
+                System.out.println("IN DBA Type: " +type);
 
 
-                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, 1);
+                Food f = new Food(foodname, rest_email, cal, fats, prot, carb, type);
 
                 menu.add(f);
 

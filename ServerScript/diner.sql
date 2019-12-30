@@ -29,8 +29,8 @@ DROP TABLE IF EXISTS `User` ;
 
 CREATE TABLE IF NOT EXISTS `User` (
   `user_id` CHAR(21) NOT NULL UNIQUE,
-  `username` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
+  `username` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL UNIQUE,
   `calories` INT NULL,
   `carbs` INT NULL,
   `fat` INT NULL,
@@ -65,9 +65,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `Restaurant` (
-  `rest_name` VARCHAR(255) NOT NULL,
-  `rest_email` VARCHAR(255) NOT NULL UNIQUE,
-  `rest_password` VARCHAR(255) NOT NULL,
+  `rest_name` VARCHAR(45) NOT NULL,
+  `rest_email` VARCHAR(45) NOT NULL UNIQUE,
+  `rest_password` VARCHAR(45) NOT NULL,
   `location_lat` DOUBLE NULL,
   `location_long` DOUBLE NULL,
   PRIMARY KEY (`rest_email`)
@@ -82,8 +82,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `Food` (
-  `rest_email` VARCHAR(255) NOT NULL,
-  `food_name` VARCHAR(255) NOT NULL,
+  `rest_email` VARCHAR(45) NOT NULL,
+  `food_name` VARCHAR(45) NOT NULL,
   `calories` INT NOT NULL,
   `carb_val` INT NOT NULL,
   `prot_val` INT NOT NULL,
@@ -106,7 +106,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `Meals` (
   `user_id` CHAR(21) NOT NULL,
-  `meal_name` VARCHAR(255) NOT NULL,
+  `meal_name` VARCHAR(45) NOT NULL,
   `calories` INT NOT NULL,
   `carbs` INT NOT NULL,
   `fat` INT NOT NULL,
@@ -145,8 +145,8 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `Food_picked` (
   `time` DATETIME NOT NULL,
-  `food_name` VARCHAR(255) NOT NULL,
-  `rest_email` VARCHAR(255) NOT NULL,
+  `food_name` VARCHAR(45) NOT NULL,
+  `rest_email` VARCHAR(45) NOT NULL,
   `picked_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` CHAR(21) NOT NULL,
   FOREIGN KEY (`user_id`)
