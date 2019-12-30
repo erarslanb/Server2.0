@@ -61,6 +61,20 @@ public class DBAdmin {
 
     }
 
+
+    public boolean deleteMeal(String id, String mealName) throws SQLException {
+
+        PreparedStatement stmt = cn.prepareStatement("delete from Meals where user_id= ? and meal_name = ?");
+        stmt.setString(1,id);
+        stmt.setString(2,mealName);
+
+        int i = stmt.executeUpdate();
+        if(i == 1){
+            return true;
+        }
+        return false;
+    }
+
     public boolean updateUser(String id, int calories, int carbs, int fat, int protein) throws SQLException{
         PreparedStatement stmt = cn.prepareStatement("update User set calories = ?, carbs = ?, fat = ?, protein = ? where user_id = ?");
 
@@ -151,6 +165,15 @@ public class DBAdmin {
     }
 
     public boolean addMeal(int carb, int fat, int protein, int cals, String id, String mealName) throws SQLException {
+
+        PreparedStatement ifStmt = cn.prepareStatement("select * from Meals where user_id = ? and meal_name = ?");
+        ifStmt.setString(1,id);
+        ifStmt.setString(2,mealName);
+
+        ResultSet ifrs = ifStmt.executeQuery();
+        if(ifrs.next()){
+            return false;
+        }
 
         PreparedStatement stmt = cn.prepareStatement("insert into Meals(user_id,meal_name,calories,carbs,fat,protein) values" +
                 " (?,?,?,?,?,?) ");

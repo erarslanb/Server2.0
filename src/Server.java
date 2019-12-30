@@ -27,6 +27,7 @@ public class Server {
         String getRestaurant = "GETRESTAURANT";
         String addMeal = "ADDMEAL";
         String addDaily = "DAILYADD";
+        String mealDelete = "MEALDELETE";
         String updateUser = "UPDATEUSER";
         String updateMeal = "UPDATEMEAL";
         String setClientNutr = "SETCLIENTNUTR";
@@ -149,12 +150,12 @@ public class Server {
                 oos.writeObject(result);
 
             }else if(arguments[0].equals(addDaily)){
-                int carbs = Integer.parseInt(arguments[1]);
-                int fat = Integer.parseInt(arguments[2]);
+                int carbs = Integer.parseInt(arguments[2]);
+                int fat = Integer.parseInt(arguments[4]);
                 int prot = Integer.parseInt(arguments[3]);
-                int calories = Integer.parseInt(arguments[4]);
+                int calories = Integer.parseInt(arguments[5]);
 
-                String id = arguments[5];
+                String id = arguments[1];
 
                 boolean result = dba.addMealToDaily(carbs, fat, prot, calories, id);
 
@@ -162,10 +163,10 @@ public class Server {
 
             }else if(arguments[0].equals(updateUser)){
                 String id = arguments[1];
-                int calories = Integer.parseInt(arguments[2]);
-                int carbs = Integer.parseInt(arguments[3]);
+                int calories = Integer.parseInt(arguments[5]);
+                int carbs = Integer.parseInt(arguments[2]);
                 int fat = Integer.parseInt(arguments[4]);
-                int protein = Integer.parseInt(arguments[5]);
+                int protein = Integer.parseInt(arguments[3]);
 
                 boolean result = dba.updateUser(id, calories, carbs, fat, protein);
 
@@ -190,6 +191,15 @@ public class Server {
                 boolean result = dba.setClientNutr(client_id, nutr_id);
 
                 oos.writeObject(result);
+            }else if(arguments[0].equals(mealDelete)){
+
+                String id = arguments[1];
+                String mealname = arguments[2];
+
+                boolean result = dba.deleteMeal(id, mealname);
+
+                oos.writeObject(result);
+
             }
 
 
