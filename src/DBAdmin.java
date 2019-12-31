@@ -297,7 +297,7 @@ public class DBAdmin {
         }
 
 
-        if(rs2.next() && rs3.next()){
+        if(rs3.next()){
 
             dailycal = rs3.getInt("calories");
             dailycarbs = rs3.getInt("carbs");
