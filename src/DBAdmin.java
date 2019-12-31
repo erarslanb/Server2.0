@@ -154,7 +154,9 @@ public class DBAdmin {
 
             if(i ==1){
                 System.out.println("here");
-                Restaurant rs = new Restaurant(restName, email, 0, 0, null, null);
+                ArrayList<Food> dumbMenu = new ArrayList<>();
+                ArrayList<ArrayList<Food>> dumbMenus = new ArrayList<>();
+                Restaurant rs = new Restaurant(restName, email, 0, 0, dumbMenu, dumbMenus   );
 
                 return rs;
             }
@@ -460,7 +462,8 @@ public class DBAdmin {
             }
 
         }
-        Restaurant rest = new Restaurant(restname, email, lat, longt, menu, null);
+        ArrayList<ArrayList<Food>> dumbList = new ArrayList<>();
+        Restaurant rest = new Restaurant(restname, email, lat, longt, menu, dumbList);
 
         return rest;
     }
